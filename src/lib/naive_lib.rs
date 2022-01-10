@@ -10,7 +10,9 @@ impl<A> EventTrigger for NaiveStrategy<A>
   where A: Unsigned + NumAssignOps + Copy {
   fn tick(&mut self) -> bool {
     let trigger = self.countdown == A::zero();
-    self.countdown = if trigger { self.trigger_freq } else { self.countdown };
+    if trigger {
+      self.countdown = self.trigger_freq;
+    }
     self.countdown -= A::one();
     trigger
   }
@@ -65,4 +67,3 @@ mod tests {
     assert_eq!(ns.tick(), true);
   }
 }
-
