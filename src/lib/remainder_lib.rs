@@ -35,14 +35,14 @@ mod tests {
   use super::*;
   #[test]
   fn test_get_remainder_strategy() {
-    let ns = get_remainder_strategy(1 as f64, 2 as f64, 3 as f64);
+    let ns = get_remainder_strategy(1., 2., 3.);
     assert_eq!(ns.trigger_freq, 6.);
     assert_eq!(ns.countdown, 0.);
   }
 
   #[test]
   fn test_remainder_strategy_tick_divisible() {
-    let mut ns = get_remainder_strategy(1 as f64, 2 as f64, 3 as f64);
+    let mut ns = get_remainder_strategy(1., 2., 3.);
     assert_eq!(ns.tick(), true);
     assert_eq!(ns.tick(), false);
     assert_eq!(ns.tick(), false);
@@ -61,13 +61,16 @@ mod tests {
   fn test_remainder_strategy_tick_indivisible() {
     env_logger::init();
     // 3/4 should round up to 1, so trigger frequency will remain unchanged
-    let mut ns = get_remainder_strategy(3 as f64, 4 as f64, 2 as f64);
+    let mut ns = get_remainder_strategy(3., 4., 2.);
     assert_eq!(ns.tick(), true);
-    assert_eq!(ns.tick(), false);
-    assert_eq!(ns.tick(), true);
-    assert_eq!(ns.tick(), false);
-    assert_eq!(ns.tick(), true);
-    assert_eq!(ns.tick(), false);
-    assert_eq!(ns.tick(), true);
+    assert_eq!(ns.tick(), false);   // cd = 2.67 - 1.         = 1.67
+    assert_eq!(ns.tick(), false);   // cd = 1.67 - 1.         = 0.67
+    assert_eq!(ns.tick(), true);    // cd = 0.67 - 1.         = -0.34
+    assert_eq!(ns.tick(), false);   // cd = -0.34 + 2.67 - 1. = 1.33
+    assert_eq!(ns.tick(), false);   // cd = 1.33 - 1.         = 0.33
+    assert_eq!(ns.tick(), true);    // cd = 0.33 - 1.         = -0.66
+    assert_eq!(ns.tick(), false);   // cd = -0.66 + 2.67 - 1. = 0.99
+    assert_eq!(ns.tick(), true);    // cd = 0.99 - 1.         = -0.01
+    assert_eq!(ns.tick(), false);   // cd = -0.01 + 2.67 - 1. = 1.67
   }
 }
