@@ -1,12 +1,13 @@
 use clocksync_lib as cs_lib;
-use clocksync_lib::EventTrigger;
-use std::env;
+use structopt::StructOpt;
+use cs_lib::EventTrigger;
 
 fn main() {
-  let args: Vec<String> = env::args().collect();
-  let output_count = args[1].parse::<u32>().unwrap();
-  let mut ns = cs_lib::get_naive_strategy(1 as u32, 2 as u32, 3 as u32);
-  for i in 0..output_count {
+  let opt = cs_lib::Opt::from_args();
+  let mut ns = cs_lib::get_naive_strategy(
+    opt.b_freq, opt.t_freq, opt.triggers_every
+  );
+  for i in 0..opt.o_num {
     let trigger = ns.tick();
     print!("{}:{}\t", i, trigger);
   }

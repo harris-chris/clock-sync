@@ -13,7 +13,7 @@ let
   '';
 
   cargoRunWrapped = pkgs.writeShellScriptBin "crun" ''
-    ${pkgs.cargo}/bin/cargo run $@ --color=always 2>&1
+    ${pkgs.cargo}/bin/cargo run --color=always $@ 2>&1
   '';
 
 in pkgs.stdenv.mkDerivation {

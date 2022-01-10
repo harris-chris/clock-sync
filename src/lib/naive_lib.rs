@@ -1,6 +1,4 @@
-use num::*;
-use num::traits::*;
-
+use num::traits::{Unsigned, NumAssignOps};
 use crate::cs_trait::*;
 
 pub struct NaiveStrategy<A: Unsigned> {
