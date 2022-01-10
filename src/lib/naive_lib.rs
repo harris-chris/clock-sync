@@ -1,9 +1,7 @@
 use num::*;
 use num::traits::*;
 
-pub trait EventTrigger {
-  fn tick(&mut self) -> bool;
-}
+use crate::cs_trait::*;
 
 pub struct NaiveStrategy<A: Unsigned> {
   trigger_freq: A,
@@ -52,5 +50,4 @@ fn test_naive_strategy_tick() {
   assert_eq!(ns.tick(), false);
   assert_eq!(ns.tick(), false);
 }
-
 
