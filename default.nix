@@ -9,7 +9,7 @@ let
   ];
 
   cargoTestWrapped = pkgs.writeShellScriptBin "ctest" ''
-    ${pkgs.cargo}/bin/cargo test $@ --color=always 2>&1 | less -r
+    ${pkgs.cargo}/bin/cargo test --color=always $@ 2>&1 | less -r
   '';
 
   cargoRunWrapped = pkgs.writeShellScriptBin "crun" ''

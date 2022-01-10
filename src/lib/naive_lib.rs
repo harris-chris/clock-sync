@@ -25,27 +25,44 @@ pub fn get_naive_strategy<A>(
   NaiveStrategy { trigger_freq: adj_count, countdown: A::zero() }
 }
 
-#[test]
-fn test_get_naive_strategy() {
-  let ns = get_naive_strategy(1 as u32, 2 as u32, 3 as u32);
-  assert_eq!(ns.trigger_freq, 6);
-  assert_eq!(ns.countdown, 0);
-}
+#[cfg(test)]
+mod tests {
+  use super::*;
+  #[test]
+  fn test_get_naive_strategy() {
+    let ns = get_naive_strategy(1 as u32, 2 as u32, 3 as u32);
+    assert_eq!(ns.trigger_freq, 6);
+    assert_eq!(ns.countdown, 0);
+  }
 
-#[test]
-fn test_naive_strategy_tick() {
-  let mut ns = get_naive_strategy(1 as u32, 2 as u32, 3 as u32);
-  assert_eq!(ns.tick(), true);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), true);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
-  assert_eq!(ns.tick(), false);
+  #[test]
+  fn test_naive_strategy_tick_divisible() {
+    let mut ns = get_naive_strategy(1 as u32, 2 as u32, 3 as u32);
+    assert_eq!(ns.tick(), true);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), true);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), false);
+  }
+
+  #[test]
+  fn test_naive_strategy_tick_indivisible() {
+    // 3/4 should round up to 1, so trigger frequency will remain unchanged
+    let mut ns = get_naive_strategy(3 as u32, 4 as u32, 2 as u32);
+    assert_eq!(ns.tick(), true);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), true);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), true);
+    assert_eq!(ns.tick(), false);
+    assert_eq!(ns.tick(), true);
+  }
 }
 
